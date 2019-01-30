@@ -1,17 +1,75 @@
 @import '../../node_modules/bootstrap/dist/css/bootstrap.css';
 @import '../../node_modules/bootstrap-vue/dist/bootstrap-vue.css';
 
-body {
-    margin: 0;
-    padding: 0;
+@white: #fff;
+@active-location-color: #1d4167;
+
+html, body {
+    background: url('../img/banner-image.jpg') no-repeat center bottom fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+.navbar-brand {
+    a {
+        color: @white;
+    }
+}
+.navbar-text {
+    text-transform: capitalize;
+}
+label {
+    color: @white;
 }
 .search-wrapper {
     padding: 2em;
-    margin: 5em auto 0;
+    margin: 12em auto 0;
+    input[type="text"] {
+        border-radius: 0;
+        color: @white;
+        font-weight: 600;
+        background: transparent;
+        outline: none;
+    }
+    .btn-location {
+        color: @white;
+        background-color: transparent;
+        border: solid 2px @active-location-color;
+        &.active{
+            background: @active-location-color;
+            border: @active-location-color;
+        }
+    }
+    .card {
+        background: transparent;
+        border: none;
+    }
+    .search-title {
+        color: @white;
+        font-weight: bold;
+        font-size: 20px;
+    }
+    .btn-do-search {
+        background: transparent;
+        color: @white;
+        width: 200px;
+        border: solid 2px;
+    }
 }
 .search-result-wrapper {
     .card {
         padding: 0;
-        margin: 5px;
+        margin: 5px 0px 25px;
+        img {
+            max-height: 200px;
+        }
+        .badge-not-available {
+            font-size: 14px;
+            font-weight: 300;
+            padding: 12px;
+            border-radius: 0;
+            display: block;
+        }
     }
 }

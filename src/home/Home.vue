@@ -2,174 +2,26 @@
     <div class="full-widtht">
         <SearchView parentDoSearch="doSearch" />
         <div v-if="showResults">
-            <ResultsView v-bind:cars-data="cars" />
+            <ResultsView v-bind:cars-data="cars"
+                v-bind:location="location"
+                v-bind:startDate="startDate"
+                v-bind:endDate="endDate"
+                :bus="bus" />
+
+            <b-modal ref="successModal" hide-footer title="Booked!">
+                <div class="d-block">
+                    <h6>
+                        You've succesffully booked <b>{{selectedCar.name}}</b>
+                        from <b>{{formatDate(startDate)}}</b> to <b>{{formatDate(endDate)}}</b>
+                    </h6>
+                </div>
+            </b-modal>
         </div>
     </div>
 </template>
 
 <script>
-var carData = [
-    {
-        "Name": "Hyundai Grand i10",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1517236166_1509779915_152_i10.webp",
-        "Price": 1301,
-        "Location": "Koramangala",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Petrol",
-        "Transmission": "Automatic",
-        "Car_Type": "Hatchback"
-    },
-    {
-        "Name": "Mahindra TUV300",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1508769709_tuv300_CARDIMENSION%282%29.png",
-        "Price": 1360,
-        "Location": "Koramangala",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Diesel",
-        "Transmission": "Manual",
-        "Car_Type": "SUV"
-    },
-    {
-        "Name": "Hyundai i20 Magna",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1517235691_1503654158_i20_magna_carimage_1_.webp",
-        "Price": 1430,
-        "Location": "Koramangala",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Diesel",
-        "Transmission": "Manual",
-        "Car_Type": "Hatchback"
-    },
-    {
-        "Name": "Mahindra Verito",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1539321232_mahindra_Vertio_new_final.webp",
-        "Price": 1440,
-        "Location": "Koramangala",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Diesel",
-        "Transmission": "Manual",
-        "Car_Type": "Sedan"
-    },
-    {
-        "Name": "Honda Amaze 2018",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1545022905_amaze2018.webp",
-        "Price": 1570,
-        "Location": "Koramangala",
-        "Availability": ["Sat", "Sun"],
-        "Fuel_Type": "Diesel",
-        "Transmission": "Automatic",
-        "Car_Type": "Sedan"
-    },
-    {
-        "Name": "Hyundai Creta",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1517236391_1511333933_creta_CARDIMENSION.webp",
-        "Price": 1700,
-        "Location": "Koramangala",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Diesel",
-        "Transmission": "Manual",
-        "Car_Type": "Mini SUV"
-    },
-    {
-        "Name": "Maruti Ritz",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1505295259_1500892807_ritz2%281%29.webp",
-        "Price": 1180,
-        "Location": "HSR Layout",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Petrol",
-        "Transmission": "Manual",
-        "Car_Type": "Hatchback"
-    },
-    {
-        "Name": "Tata Bolt",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1505297592_1500892399_bolt.webp",
-        "Price": 1150,
-        "Location": "HSR Layout",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Diesel",
-        "Transmission": "Manual",
-        "Car_Type": "Hatchback"
-    },
-    {
-        "Name": "Hyundai Xcent",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1505390422_1500896796_xcent.webp",
-        "Price": 1450,
-        "Location": "HSR Layout",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Diesel",
-        "Transmission": "Manual",
-        "Car_Type": "Sedan"
-    },
-    {
-        "Name": "Suzuki Vitara Brezza",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1522147962_vitarabrezza-final_CARDIMENSION.webp",
-        "Price": 1580,
-        "Location": "HSR Layout",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Diesel",
-        "Transmission": "Manual",
-        "Car_Type": "Mini SUV"
-    },
-    {
-        "Name": "Tata Hexa XE",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1525356832_tatahexa.png",
-        "Price": 1980,
-        "Location": "HSR Layout",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Diesel",
-        "Transmission": "Manual",
-        "Car_Type": "SUV"
-    },
-    {
-        "Name": "Maruti Suzuki Ertiga",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1505393064_1500892647_etriga.webp",
-        "Price": 2000,
-        "Location": "HSR Layout",
-        "Availability": ["Sat", "Sun"],
-        "Fuel_Type": "Diesel",
-        "Transmission": "Manual",
-        "Car_Type": "SUV"
-    },
-    {
-        "Name": "Hyundai Eon",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1505389673_1500892609_eon.webp",
-        "Price": 1100,
-        "Location": "Indiranagar",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Petrol",
-        "Transmission": "Manual",
-        "Car_Type": "Hatchback"
-    },
-    {
-        "Name": "Ignis",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1526893284_ignis.webp",
-        "Price": 1150,
-        "Location": "Indiranagar",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Petrol",
-        "Transmission": "Automatic",
-        "Car_Type": "Hatchback"
-    },
-    {
-        "Name": "Maruti Suzuki Baleno",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1517234251_1503651026_balenoimage_carimage.webp",
-        "Price": 1433,
-        "Location": "Indiranagar",
-        "Availability": ["Mon","Tue", "Wed", "Thu", "Fri"],
-        "Fuel_Type": "Diesel",
-        "Transmission": "Manual",
-        "Car_Type": "Hatchback"
-    },
-    {
-        "Name": "Honda Jazz",
-        "Photo": "https://jtride-data.s3.ap-south-1.amazonaws.com/uploads/1505393385_1504243587_jazz_CARDIMENSION.webp",
-        "Price": 1500,
-        "Location": "Indiranagar",
-        "Availability": ["Sat", "Sun"],
-        "Fuel_Type": "Petrol",
-        "Transmission": "Manual",
-        "Car_Type": "Hatchback"
-    }
-];
+    import { config } from '../constants';
     import SearchView from './Search'
     import ResultsView from './Results'
     import { setTimeout } from 'timers';
@@ -179,20 +31,86 @@ var carData = [
             SearchView,
             ResultsView
         },
+        props: [
+            'bus'
+        ],
         data () {
             return {
                 showResults: false,
-                cars: carData
+                cars: [],
+                location: '',
+                startDate: new Date(),
+                endDate: new Date(),
+                selectedCar: {}
             }
         },
         methods: {
-            doSearch: function(e) {
-                console.log(this.cars);
+            fetchItems() {
+                config
+                fetch(config.apiBaseUrl + 'products?' + new Date().getTime())
+                    .then(stream => stream.json())
+                    .then(data => this.cars = data)
+                    .catch(error => console.error(error))
+            },
+            doSearch: function(e, location, startDate, endDate) {
+                this.fetchItems();
+                this.location = location;
+                this.startDate = startDate;
+                this.endDate = endDate;
                 this.showResults = true;
                 setTimeout(() => {
                     this.$scrollTo('#search-results', 500)
                 })
+            },
+            rent: function(selectedCar) {
+
+                this.selectedCar = selectedCar;
+                if (!this.$parent.isUserLoggedIn()) {
+                    this.$parent.showLogin();
+                } else {
+                    this.rentCar();
+                }
+            },
+            rentCar: function() {
+                console.log('emitted selectedCar', this.selectedCar._id);
+                fetch(config.apiBaseUrl + 'products/book/' + this.selectedCar._id, {
+                    method: 'put',
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Accept': '*'
+                    },
+                    body: JSON.stringify({
+                        soldout: true
+                    })
+                })
+                .then(res => res.json())
+                .then(response => {
+                    console.log(response);
+                    if (response.status && response.message) {
+                        this.$refs.successModal.show();
+                        this.selectedCar.booked = true;
+                        this.updateBooked();
+                        this.bus.$emit('testing')
+                    }
+                })
+                .catch(error => console.error(error));
+            },
+            updateBooked() {
+                this.showResults = false;
+                let index = this.cars.findIndex((obj) => {
+                    return obj._id === this.selectedCar._id;
+                });
+                this.cars[index] = this.selectedCar;
+
+                this.showResults = true;
+            },
+            formatDate(date) {
+                return new Date(date).toDateString()
             }
+        },
+        mounted() {
+            this.fetchItems();
+            this.bus.$on('userLoggedIn', this.rentCar)
         }
     }
 </script>

@@ -35,18 +35,12 @@ module.exports = {
             }, {
                 loader: 'less-loader'
             }]
-        }
-        
-        // },{
-        //     test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        //     use: {
-        //         loader: 'url-loader',
-        //         options: {
-        //             limit: 10000,
-        //             name: path.posix.join('assets', 'img')
-        //         }
-        //     }
-        // }, {
+        }, {
+            test: /\.jpg$/,
+            use: {
+                loader: 'url-loader'
+            }
+        }//, {
         //     test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         //     use: {
         //         loader: 'url-loader'
